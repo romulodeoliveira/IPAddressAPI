@@ -36,24 +36,5 @@ namespace IPAddressAPI.Controllers
                 AccessDate = accessDate.ToString()
             });
         }
-
-        [HttpGet("GetServerInfo")]
-        public IActionResult GetServerInfo()
-        {
-            var serverName = HttpContext.Request.Host.Host;
-            var serverPort = HttpContext.Request.Host.Port;
-            var clientIp = HttpContext.Connection.RemoteIpAddress;
-
-            string ipv6String = clientIp.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
-                ? clientIp.ToString()
-                : clientIp.MapToIPv6().ToString();
-
-            return Ok(new
-            {
-                ServerName = serverName,
-                ServerPort = serverPort,
-                ClientIp = ipv6String
-            });
-        }
     }
 }
