@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Web;
 
 namespace IPAddressAPI.Controllers
 {
@@ -9,7 +10,7 @@ namespace IPAddressAPI.Controllers
     [Route("api/[controller]")]
     public class IPAddressController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetIPAddresses")]
         public IActionResult GetIPAddresses()
         {
             var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
@@ -17,12 +18,15 @@ namespace IPAddressAPI.Controllers
             var ipv4 = remoteIpAddress.MapToIPv4();
             var ipv6 = remoteIpAddress.MapToIPv6();
             
-            if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6 &&
-                ipv6.IsIPv4MappedToIPv6)
+            if (remoteIpAddress.AddressFamily == AddressFamily.InterNetwork)
             {
-                ipv6 = ipv6.MapToIPv4();
+                ipv4 = remoteIpAddress;
             }
-
+            else if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                ipv6 = remoteIpAddress;
+            }
+            
             var accessDate = DateTime.Now;
 
             return Ok(new
@@ -30,6 +34,25 @@ namespace IPAddressAPI.Controllers
                 IPv4 = ipv4.ToString(),
                 IPv6 = ipv6.ToString(),
                 AccessDate = accessDate.ToString()
+            });
+        }
+
+        [HttpGet("GetServerInfo")]
+        public IActionResult GetServerInfo()
+        {
+            var serverName = HttpContext.Request.Host.Host;
+            var serverPort = HttpContext.Request.Host.Port;
+            var clientIp = HttpContext.Connection.RemoteIpAddress;
+
+            string ipv6String = clientIp.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
+                ? clientIp.ToString()
+                : clientIp.MapToIPv6().ToString();
+
+            return Ok(new
+            {
+                ServerName = serverName,
+                ServerPort = serverPort,
+                ClientIp = ipv6String
             });
         }
     }
