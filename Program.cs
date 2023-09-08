@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "1.0",
-        Title = "Send Email API",
+        Title = "Get Ip API",
         Description = "Projeto destinado a portfólio. Por favor, tenha consciência ao utilizá-lo.",
         Contact = new OpenApiContact
         {
