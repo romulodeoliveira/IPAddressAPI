@@ -10,13 +10,13 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "1.0",
-        Title = "Get Ip API",
+        Title = "Get IP Address API",
         Description = "Projeto destinado a portfólio. Por favor, tenha consciência ao utilizá-lo.",
         Contact = new OpenApiContact
         {
             Name = "Romulo de Oliveira",
-            Email = "devromulodeoliveira@gmail.com",
-            Url = new Uri("https://github.com/romulodeoliveira"),
+            Email = "csharp@romulodeoliveira.net",
+            Url = new Uri("https://romulodeoliveira.net/"),
         },
         License = new OpenApiLicense
         {
