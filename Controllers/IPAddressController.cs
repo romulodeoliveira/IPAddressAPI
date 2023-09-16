@@ -1,8 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Web;
 
 namespace IPAddressAPI.Controllers
 {
@@ -13,28 +9,40 @@ namespace IPAddressAPI.Controllers
         [HttpGet("GetIPAddresses")]
         public IActionResult GetIPAddresses()
         {
-            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
-
-            var ipv4 = remoteIpAddress.MapToIPv4();
-            var ipv6 = remoteIpAddress.MapToIPv6();
-            
-            if (remoteIpAddress.AddressFamily == AddressFamily.InterNetwork)
-            {
-                ipv4 = remoteIpAddress;
-            }
-            else if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                ipv6 = remoteIpAddress;
-            }
-            
             var accessDate = DateTime.Now;
 
-            return Ok(new
+            try
             {
-                IPv4 = ipv4.ToString(),
-                IPv6 = ipv6.ToString(),
-                AccessDate = accessDate.ToString()
-            });
+                using (var httpClient = new HttpClient())
+                {
+                    var ipv6Address = httpClient.GetStringAsync("https://ipv6.icanhazip.com/").Result;
+                    var ipv4 = HttpContext.Connection.RemoteIpAddress?.MapToIPv4()?.ToString();
+
+                    var result = new
+                    {
+                        IPv4 = ipv4,
+                        IPv6 = ipv6Address.Trim(),
+                        AccessDate = accessDate.ToString()
+                    };
+
+                    return Ok(result);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Erro ao fazer a solicitação HTTP: {ex.Message}");
+
+                var ipv4 = HttpContext.Connection.RemoteIpAddress?.MapToIPv4()?.ToString();
+
+                var result = new
+                {
+                    IPv4 = ipv4,
+                    IPv6 = (string)null,
+                    AccessDate = accessDate.ToString()
+                };
+
+                return Ok(result);
+            }
         }
     }
 }
