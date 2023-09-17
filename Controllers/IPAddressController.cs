@@ -13,21 +13,18 @@ namespace IPAddressAPI.Controllers
 
             try
             {
-                using (var httpClient = new HttpClient())
+                var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+                var ipv4 = remoteIpAddress.MapToIPv4();
+                var ipv6 = remoteIpAddress.MapToIPv6();
+
+                var result = new
                 {
-                    var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
-                    var ipv4 = remoteIpAddress.MapToIPv4();
-                    var ipv6Address = httpClient.GetStringAsync("https://ipv6.icanhazip.com/").Result;
+                    IPv4 = ipv4.ToString(),
+                    IPv6 = ipv6.ToString(),
+                    AccessDate = accessDate.ToString()
+                };
 
-                    var result = new
-                    {
-                        IPv4 = ipv4.ToString(),
-                        IPv6 = ipv6Address.Trim(),
-                        AccessDate = accessDate.ToString()
-                    };
-
-                    return Ok(result);
-                }
+                return Ok(result);
             }
             catch (HttpRequestException error)
             {
