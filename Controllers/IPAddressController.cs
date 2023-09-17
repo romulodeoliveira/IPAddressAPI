@@ -29,21 +29,9 @@ namespace IPAddressAPI.Controllers
                     return Ok(result);
                 }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException error)
             {
-                Console.WriteLine($"Erro ao fazer a solicitação HTTP: {ex.Message}");
-
-                var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
-                var ipv4 = remoteIpAddress.MapToIPv4();
-
-                var result = new
-                {
-                    IPv4 = ipv4,
-                    IPv6 = (string)null,
-                    AccessDate = accessDate.ToString()
-                };
-
-                return Ok(result);
+                return StatusCode(500, $"Ops... Não conseguimos verificar seu ip.\nDetalhe do erro: {error.Message}");
             }
         }
     }
