@@ -15,8 +15,9 @@ namespace IPAddressAPI.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
+                    var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+                    var ipv4 = remoteIpAddress.MapToIPv4();
                     var ipv6Address = httpClient.GetStringAsync("https://ipv6.icanhazip.com/").Result;
-                    var ipv4 = HttpContext.Connection.RemoteIpAddress?.MapToIPv4()?.ToString();
 
                     var result = new
                     {
@@ -32,7 +33,8 @@ namespace IPAddressAPI.Controllers
             {
                 Console.WriteLine($"Erro ao fazer a solicitação HTTP: {ex.Message}");
 
-                var ipv4 = HttpContext.Connection.RemoteIpAddress?.MapToIPv4()?.ToString();
+                var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+                var ipv4 = remoteIpAddress.MapToIPv4();
 
                 var result = new
                 {
