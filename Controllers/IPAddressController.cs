@@ -21,7 +21,7 @@ namespace IPAddressAPI.Controllers
 
                     var result = new
                     {
-                        IPv4 = ipv4,
+                        IPv4 = ipv4.ToString(),
                         IPv6 = ipv6Address.Trim(),
                         AccessDate = accessDate.ToString()
                     };
