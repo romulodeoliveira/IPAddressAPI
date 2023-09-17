@@ -9,10 +9,9 @@ namespace IPAddressAPI.Controllers
         [HttpGet("GetIPAddresses")]
         public IActionResult GetIPAddresses()
         {
-            var accessDate = DateTime.Now;
-
             try
             {
+                var accessDate = DateTime.Now;
                 var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
                 var ipv4 = remoteIpAddress.MapToIPv4();
                 var ipv6 = remoteIpAddress.MapToIPv6();
